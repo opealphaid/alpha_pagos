@@ -100,7 +100,7 @@ public class VpayService {
             }
 
             if (qrBase64 != null) {
-                String directoryPath = "C:\\Users\\XCruz\\Desktop\\ALPHA\\QRimagenes";
+                String directoryPath = "/home/administrator/alphapagos/QRimagenes";
 
                 File directory = new File(directoryPath);
                 if (!directory.exists()) {
@@ -112,7 +112,7 @@ public class VpayService {
 
                 saveBase64AsImage(qrBase64, fullPath);
 
-                String logoPath = "C:\\Users\\XCruz\\Downloads\\Logo.png";
+                String logoPath = "/home/administrator/alphapagos/Logo.png";
 
                 String outputPath = directoryPath + File.separator + "qr_with_logo_" + qrId + ".jpg";
                 addLogoToQr(fullPath, logoPath, outputPath);

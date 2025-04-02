@@ -28,6 +28,9 @@ public class PaymentService {
         payment.setQrCodeUrl(qrFilePath);
         payment.setStatus("PENDING");
         payment.setCreatedAt(LocalDateTime.now());
+        payment.setAmount(String.valueOf(qrRequest.getAmount()));
+        payment.setCurrency(qrRequest.getCurrency());
+        payment.setDescription("NUEVA DESCRIPCION");
         paymentRepository.save(payment);
         return qrFilePath;
     }
