@@ -2,6 +2,7 @@ package com.proyects.pasarelapagosalpha.controller;
 
 import com.proyects.pasarelapagosalpha.model.Payment;
 import com.proyects.pasarelapagosalpha.model.request.QrRequest;
+import com.proyects.pasarelapagosalpha.model.response.QrResponse;
 import com.proyects.pasarelapagosalpha.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -27,25 +28,32 @@ public class PaymentController {
 //        return paymentService.createPayment(qrRequest);
 //    }
 
+//    @PostMapping
+//    public ResponseEntity<byte[]> createPayment(@RequestBody QrRequest qrRequest) {
+//        String imagePath = paymentService.createPayment(qrRequest);
+//
+//        try {
+//            // Leer el archivo de imagen desde el sistema de archivos
+//            File imageFile = new File(imagePath);
+//            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
+//
+//            // Configurar los encabezados HTTP
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.IMAGE_JPEG);
+//
+//            // Retornar la imagen como respuesta
+//            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+//
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error al procesar la imagen: " + e.getMessage());
+//        }
+//    }
+
     @PostMapping
-    public ResponseEntity<byte[]> createPayment(@RequestBody QrRequest qrRequest) {
-        String imagePath = paymentService.createPayment(qrRequest);
+    public ResponseEntity<QrResponse> createPayment(@RequestBody QrRequest qrRequest) {
+        QrResponse qrResponse = paymentService.createPayment(qrRequest);
 
-        try {
-            // Leer el archivo de imagen desde el sistema de archivos
-            File imageFile = new File(imagePath);
-            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-
-            // Configurar los encabezados HTTP
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_JPEG);
-
-            // Retornar la imagen como respuesta
-            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error al procesar la imagen: " + e.getMessage());
-        }
+        return ResponseEntity.ok(qrResponse);
     }
 
 
