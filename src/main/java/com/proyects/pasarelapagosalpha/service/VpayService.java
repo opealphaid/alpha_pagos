@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.proyects.pasarelapagosalpha.config.VpayConfig;
 import com.proyects.pasarelapagosalpha.model.request.*;
+import com.proyects.pasarelapagosalpha.model.response.QrVpayServiceResponse;
 import com.proyects.pasarelapagosalpha.model.response.VpayResponse;
 import com.proyects.pasarelapagosalpha.model.response.VpayResponseItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class VpayService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public String generateQrCode(QrRequest qrRequest) {
+    public QrVpayServiceResponse generateQrCode(QrRequest qrRequest) {
         try {
 
             VpayRequest vpayRequest = new VpayRequest();
@@ -99,8 +100,10 @@ public class VpayService {
                 }
             }
 
+            System.out.println(qrId);
+
             if (qrBase64 != null) {
-                String directoryPath = "/home/administrator/alphapagos/QRimagenes";
+                String directoryPath = "C:\\Users\\XCruz\\Desktop\\PAGOS";
 
                 File directory = new File(directoryPath);
                 if (!directory.exists()) {
@@ -112,13 +115,16 @@ public class VpayService {
 
                 saveBase64AsImage(qrBase64, fullPath);
 
-                String logoPath = "/home/administrator/alphapagos/Logo.png";
+                String logoPath = "C:\\Users\\XCruz\\Desktop\\ALPHA\\FACTURACION\\DEMO_FACTURACION\\COMPUTARIZADA\\api-factu\\target\\Logo.png";
 
                 String outputPath = directoryPath + File.separator + "qr_with_logo_" + qrId + ".jpg";
                 addLogoToQr(fullPath, logoPath, outputPath);
 
-                return outputPath;
-                //return fullPath;
+                //return qrBase64;
+                QrVpayServiceResponse qrVpayServiceResponse = new QrVpayServiceResponse();
+                qrVpayServiceResponse.setIdQr(qrId);
+                qrVpayServiceResponse.setBase64Image(outputPath);
+                return qrVpayServiceResponse;
             } else {
                 throw new RuntimeException("No se encontró el QR en la respuesta");
             }

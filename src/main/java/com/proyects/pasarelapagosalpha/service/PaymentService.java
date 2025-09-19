@@ -4,6 +4,7 @@ import com.proyects.pasarelapagosalpha.model.Payment;
 import com.proyects.pasarelapagosalpha.model.request.QrRequest;
 import com.proyects.pasarelapagosalpha.model.request.VpayRequest;
 import com.proyects.pasarelapagosalpha.model.response.QrResponse;
+import com.proyects.pasarelapagosalpha.model.response.QrVpayServiceResponse;
 import com.proyects.pasarelapagosalpha.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,20 +43,21 @@ public class PaymentService {
 //    }
 
     public QrResponse createPayment(QrRequest qrRequest) {
-        String qrFilePath = vpayService.generateQrCode(qrRequest);
+        QrVpayServiceResponse generateQrCode = vpayService.generateQrCode(qrRequest);
 
         Payment payment = new Payment();
-        payment.setQrCodeUrl(qrFilePath);
+        payment.setQrCodeUrl(generateQrCode.getBase64Image());
         payment.setStatus("PENDING");
         payment.setCreatedAt(LocalDateTime.now());
         payment.setAmount(String.valueOf(qrRequest.getAmount()));
         payment.setCurrency(qrRequest.getCurrency());
-        payment.setDescription("NUEVA DESCRIPCION");
+        payment.setDescription(qrRequest.getGloss());
+        payment.setIdQr(generateQrCode.getIdQr());
 
         paymentRepository.save(payment);
 
         try {
-            byte[] imageBytes = Files.readAllBytes(new File(qrFilePath).toPath());
+            byte[] imageBytes = Files.readAllBytes(new File(generateQrCode.getBase64Image()).toPath());
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 
             return new QrResponse(base64Image, payment.getId());

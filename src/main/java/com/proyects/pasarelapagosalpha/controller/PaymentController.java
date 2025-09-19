@@ -71,6 +71,9 @@ public class PaymentController {
     public Payment updatePaymentStatus(@PathVariable Long id, @RequestParam String status) {
         return paymentService.updatePaymentStatus(id, status);
     }
+
+
+
 }
 
 
